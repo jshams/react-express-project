@@ -38,7 +38,7 @@ class App extends Component {
   fetchMessage() {
     // Wrapping the API call in a function allow you to make calls to this
     // API as often as needed.
-    
+
     // This calls a route and passes value in the query string. 
     fetch('/random/?n=99').then(res => res.json()).then((json) => {
       console.log(">", json)
@@ -48,6 +48,7 @@ class App extends Component {
     }).catch((err) => {
       console.log(err.message)
     })
+
   }
 
   renderMessage() {
@@ -79,7 +80,7 @@ class App extends Component {
               this.fetchMessage()
             }}
           >
-          Random
+            Random
           </button>
         </p>
       </div>
