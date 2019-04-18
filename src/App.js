@@ -2,6 +2,7 @@
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable semi */
 import React, { Component } from 'react';
+import OneRandomInput from './OneRandomInput'
 
 import './App.css';
 
@@ -13,7 +14,9 @@ class App extends Component {
     this.state = {
       about: null,
       message: null,
-      number: 99,
+      min: null,
+      max: 100,
+      rolls: null,
     }
   }
 
@@ -33,15 +36,15 @@ class App extends Component {
     })
 
     // Let's call another API
-    this.fetchMessage()
+    this.random()
   }
 
-  fetchMessage() {
+  random() {
     // Wrapping the API call in a function allow you to make calls to this
     // API as often as needed.
     // This calls a route and passes value in the query string. 
-    const { number } = this.state
-    fetch(`/random/${number}`).then(res => res.json()).then((json) => {
+    const { max } = this.state
+    fetch(`/random/${max}`).then(res => res.json()).then((json) => {
       console.log('>', json)
       this.setState({
         message: json.value,
@@ -49,6 +52,58 @@ class App extends Component {
     }).catch((err) => {
       console.log(err.message)
     })
+  }
+
+  randomD() {
+    // Wrapping the API call in a function allow you to make calls to this
+    // API as often as needed.
+    // This calls a route and passes value in the query string. 
+    const { max } = this.state
+    fetch(`/random/sides/${max}`).then(res => res.json()).then((json) => {
+      console.log('>', json)
+      this.setState({
+        message: json.value,
+      })
+    }).catch((err) => {
+      console.log(err.message)
+    })
+  }
+
+  randomRolls() {
+    // Wrapping the API call in a function allow you to make calls to this
+    // API as often as needed.
+    // This calls a route and passes value in the query string. 
+    const { max, rolls } = this.state
+    fetch(`/random/sides/${max}/rolls/${rolls}`).then(res => res.json()).then((json) => {
+      console.log('>', json)
+      this.setState({
+        message: json.value,
+      })
+    }).catch((err) => {
+      console.log(err.message)
+    })
+  }
+
+  randomRollsRange() {
+    // Wrapping the API call in a function allow you to make calls to this
+    // API as often as needed.
+    // This calls a route and passes value in the query string.
+    const { min, max, rolls } = this.state
+    fetch(`/random/start/${min}/end/${max}/rolls/${rolls}`).then(res => res.json()).then((json) => {
+      console.log('>', json)
+      this.setState({
+        message: json.value,
+      })
+    }).catch((err) => {
+      console.log(err.message)
+    })
+  }
+
+  fetchMessage() {
+    const { min, max, rolls } = this.state
+    if ((min != null) && (max != null) && (rolls != null)) this.randomRollsRange()
+    else if ((min != null) && (max != null)) this.randomRolls()
+    else if (max != null) this.randomD()
   }
 
   renderMessage() {
@@ -64,7 +119,12 @@ class App extends Component {
   }
 
   render() {
-    const { about, number } = this.state
+    const {
+      about,
+      min,
+      max,
+      rolls,
+    } = this.state
 
     return (
       <div className="App">
@@ -76,9 +136,21 @@ class App extends Component {
         <p>
           <input
             type="number"
-            placeholder="ENTER A NUMBER"
-            value={number}
-            onChange={e => this.setState({ number: e.target.value })}
+            placeholder="MINIMUM"
+            value={min}
+            onChange={e => this.setState({ min: e.target.value })}
+          />
+          <input
+            type="number"
+            placeholder="MAXIMUM"
+            value={max}
+            onChange={e => this.setState({ max: e.target.value })}
+          />
+          <input
+            type="number"
+            placeholder="ROLLS"
+            value={rolls}
+            onChange={e => this.setState({ rolls: e.target.value })}
           />
           <button
             type="button"
