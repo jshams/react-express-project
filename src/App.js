@@ -13,6 +13,7 @@ class App extends Component {
     this.state = {
       about: null,
       message: null,
+      number: 99,
     }
   }
 
@@ -38,17 +39,16 @@ class App extends Component {
   fetchMessage() {
     // Wrapping the API call in a function allow you to make calls to this
     // API as often as needed.
-
     // This calls a route and passes value in the query string. 
-    fetch('/random/?n=99').then(res => res.json()).then((json) => {
-      console.log(">", json)
+    const { number } = this.state
+    fetch(`/random/${number}`).then(res => res.json()).then((json) => {
+      console.log('>', json)
       this.setState({
         message: json.value,
       })
     }).catch((err) => {
       console.log(err.message)
     })
-
   }
 
   renderMessage() {
@@ -64,7 +64,7 @@ class App extends Component {
   }
 
   render() {
-    const { about } = this.state
+    const { about, number } = this.state
 
     return (
       <div className="App">
@@ -74,6 +74,12 @@ class App extends Component {
         </p>
         <div>{this.renderMessage()}</div>
         <p>
+          <input
+            type="number"
+            placeholder="ENTER A NUMBER"
+            value={number}
+            onChange={e => this.setState({ number: e.target.value })}
+          />
           <button
             type="button"
             onClick={() => {
